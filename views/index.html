@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzaria Oliveira - Cardápio Digital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/output.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #f9f9f9;
+        }
+        .whatsapp-alert {
+            position: fixed;
+            right: -100%;
+            top: 20px;
+            max-width: 320px;
+            width: 100%;
+            z-index: 1000;
+            overflow: hidden;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+        }
+        .whatsapp-alert-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 10px 10px 0 0;
+        }
+        .whatsapp-alert-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            margin-right: 12px;
+        }
+        .whatsapp-alert-body {
+            padding: 12px 16px;
+            background: white;
+            border-radius: 0 0 10px 10px;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-slide-up {
+            animation: slideUp 0.3s ease-out forwards;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Barra de navegação -->
+    <header class="bg-white shadow-md py-3 px-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="/Assets/logo.png" alt="Pizzaria Oliveira" class="h-12 mr-3" onerror="this.src='/Assets/placeholder.png'">
+                <h1 class="text-xl font-bold text-gray-800">Pizzaria Oliveira</h1>
+            </div>
+            <div id="status-container" class="flex items-center justify-center gap-2 px-4 py-1 mt-1 rounded-xl text-lg shadow-md bg-lime-400">
+                <div id="status-indicator" class="w-2 h-2 rounded-full animate-ping bg-green-800"></div>
+                <span id="status-text" class="text-sm md:text-base font-medium">Aberto 🍕</span>
+            </div>
+            <button id="open-cart" class="relative p-2 text-gray-600 hover:text-gray-800">
+                <i class="fas fa-shopping-cart text-2xl"></i>
+                <span id="cart-count" class="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Método de Entrega -->
+    <div class="bg-gray-100 py-2 border-b sticky top-0 z-10">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-center space-x-4">
+                <button class="delivery-method px-4 py-2 rounded-lg text-sm md:text-base font-medium bg-gray-100 hover:bg-gray-200 transition-colors" data-method="delivery">
+                    <i class="fas fa-motorcycle mr-2"></i> Entrega
+                </button>
+                <button class="delivery-method px-4 py-2 rounded-lg text-sm md:text-base font-medium bg-gray-100 hover:bg-gray-200 transition-colors" data-method="pickup">
+                    <i class="fas fa-shopping-bag mr-2"></i> Retirada
+                </button>
+                <button class="delivery-method px-4 py-2 rounded-lg text-sm md:text-base font-medium bg-gray-100 hover:bg-gray-200 transition-colors" data-method="dineIn">
+                    <i class="fas fa-utensils mr-2"></i> Na Mesa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <main class="flex-1 container mx-auto px-4 py-8">
+        <!-- Abas do menu -->
+        <div class="flex border-b mb-6">
+            <button id="pizzas-tab" class="nav-tab py-2 px-4 text-green-500 border-b-2 border-green-500 active">
+                <i class="fas fa-pizza-slice mr-2"></i> Pizzas
+            </button>
+            <button id="drinks-tab" class="nav-tab py-2 px-4 text-gray-500 border-b-2 border-transparent">
+                <i class="fas fa-glass-cheers mr-2"></i> Bebidas
+            </button>
+        </div>
+
+        <!-- Itens do Menu -->
+        <div id="menu-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <h3 class="text-lg font-bold mb-3">Pizzaria Oliveira</h3>
+                    <p class="text-gray-300">Os melhores sabores da cidade, diretamente na sua casa!</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-3">Horários</h3>
+                    <p class="text-gray-300">Segunda a Sexta: 18h às 23h</p>
+                    <p class="text-gray-300">Sábados e Domingos: 18h às 24h</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-3">Contato</h3>
+                    <p class="text-gray-300">
+                        <i class="fab fa-whatsapp mr-2"></i> (99) 98457-3587
+                    </p>
+                    <p class="text-gray-300">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Rua da Pizza, 123
+                    </p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-6 pt-6 text-center text-gray-400">
+                &copy; 2025 Pizzaria Oliveira. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal do Carrinho -->
+    <div id="cart-modal" class="fixed inset-0 z-40 bg-black bg-opacity-50 hidden">
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform transition-transform duration-300">
+            <div class="flex flex-col h-full">
+                <div class="flex justify-between items-center p-4 border-b">
+                    <h2 class="text-xl font-bold">Seu Carrinho</h2>
+                    <button id="close-cart" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times w-6 h-6"></i>
+                    </button>
+                </div>
+                <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+                <div class="p-4 border-t">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-gray-700 font-medium">Total:</span>
+                        <span id="cart-total" class="text-xl font-bold">R$ 0,00</span>
+                    </div>
+                    <button id="checkout-button" class="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition-all duration-300">
+                        Finalizar Pedido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/services/api.js"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/delivery-modals.js"></script>
+    <script src="/js/whatsapp-module.js"></script>
+</body>
+</html>
